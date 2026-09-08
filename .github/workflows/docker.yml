@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Deploy Docker Image
 
 on:
   push:
@@ -24,3 +24,15 @@ jobs:
 
       - name: Push Docker image
         run: docker push sampada011998/my-docker-website:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull sampada011998/my-docker-website:latest
+            docker stop my-docker-website || true
+            docker rm my-docker-website || true
+            docker run -d --name my-docker-website -p 80:80 sampada011998/my-docker-website:latest
