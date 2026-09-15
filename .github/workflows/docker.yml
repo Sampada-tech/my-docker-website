@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-permissions:
-  id-token: write
-  contents: read
   
 jobs:
   docker-build:
@@ -27,13 +24,7 @@ jobs:
 
       - name: Push Docker image
         run: docker push sampada011998/my-docker-website:latest
-        
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::151498474399:role/github-actions-ssm-role
-          aws-region: ap-south-1 
-
+         
       
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.2.0
